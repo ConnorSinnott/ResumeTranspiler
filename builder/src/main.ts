@@ -1,4 +1,5 @@
 import express from 'express';
+import pug from 'pug';
 
 const SERVER_PORT = process.env['server_port'];
 if (!SERVER_PORT)
@@ -7,7 +8,11 @@ if (!SERVER_PORT)
 const app = express();
 
 app.get('/', (req, res) => {
-    res.send('Hello World');
+    const TARGET = '../resume/index.pug';
+
+    const html = pug.renderFile(TARGET);
+
+    res.send(html);
 });
 
 app.listen(SERVER_PORT, () => {

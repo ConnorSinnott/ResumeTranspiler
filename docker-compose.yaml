@@ -6,6 +6,7 @@ services:
     working_dir: /home/node/src
     volumes:
       - ./builder/src/:/home/node/src/
+      - ./resume/:/home/node/resume/
     environment:
       server_port: 3000
     ports:
