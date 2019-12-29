@@ -1,8 +1,13 @@
 version: '3'
 services:
   builder:
-    command: 'ts-node-dev --transpile-only --respawn src/main.ts'
-    build: ./source/.
-    working_dir: /home/node
+    command: 'ts-node-dev --transpile-only --respawn main.ts'
+    build: builder/.
+    working_dir: /home/node/src
     volumes:
-      - ./source/src/:/home/node/src/
+      - ./builder/src/:/home/node/src/
+      - ./resume/:/home/node/resume/
+    environment:
+      server_port: 3000
+    ports:
+    - 3000:3000
