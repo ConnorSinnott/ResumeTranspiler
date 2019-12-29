@@ -1,3 +1,3 @@
 FROM node:12.14
 
-RUN npm i -g typescript ts-node
+RUN npm i -g typescript ts-node ts-node-dev
