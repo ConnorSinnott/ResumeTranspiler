@@ -1,7 +1,7 @@
 version: '3'
 services:
   builder:
-    command: 'ts-node --transpile-only src/main.ts'
+    command: 'ts-node-dev --transpile-only --respawn src/main.ts'
     build: ./source/.
     working_dir: /home/node
     volumes:
