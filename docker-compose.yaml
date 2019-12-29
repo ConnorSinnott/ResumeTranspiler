@@ -9,6 +9,7 @@ services:
       - ./resume/:/home/node/resume/
     environment:
       server_port: 3000
+      source_directory: '/home/node/resume/'
       log_level: 4
     ports:
     - 3000:3000
