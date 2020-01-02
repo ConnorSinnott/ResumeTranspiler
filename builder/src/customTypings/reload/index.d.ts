@@ -5,7 +5,14 @@ declare module 'reload' {
         reload(): void;
     }
 
-    function wrap(application: Application): Promise<Reloader>
+    export interface Options {
+        port: number;
+    }
+
+    function wrap(
+        application: Application,
+        options: Options,
+    ): Promise<Reloader>;
 
     export default wrap;
 }
