@@ -1,0 +1,11 @@
+html
+    head
+        meta(charset='utf8')
+        title Resume
+
+        each additionalScript in additionalScripts
+            script(src=additionalScript)
+        each additionalStyle in additionalStyles
+            link(rel='stylesheet' href=additionalStyle)
+    body
+        block content
