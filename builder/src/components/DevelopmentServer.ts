@@ -14,7 +14,9 @@ export const startDevelopmentServer = async (
     const application = express();
 
     application.get('/', (req, res) => {
-        const rendered = render(options.sourceDirectory, 'index.pug');
+        const rendered = render(options.sourceDirectory, 'index.pug', {
+            additionalScripts: ['/reload/reload.js'],
+        });
 
         res.send(rendered);
     });
