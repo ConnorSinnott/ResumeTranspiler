@@ -11,13 +11,22 @@ EMPTY_RESUME_DIRECTORY_COMMAND = 'rm -rf /project/resume/*'
 def _getDirectories():
     stream = os.popen(LIST_COMMAND)
     result = stream.read().strip()
-    return result.split('\n')
+
+    if len(result) > 0:
+        return result.split('\n')
+    else:
+        return []
 
 def _emptyResumeDirectory():
     os.system(EMPTY_RESUME_DIRECTORY_COMMAND)
 
 def listDirectories():
-    print '\n'.join(_getDirectories())
+    directories = _getDirectories()
+
+    if len(directories) > 0:
+        print '\n'.join(directories)
+    else:
+        print 'Server has no directories'
 
 def checkoutDirectory(arguments):
     if len(arguments) < 1:
