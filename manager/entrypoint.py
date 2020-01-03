@@ -6,6 +6,9 @@ def _getDirectories():
     result = stream.read().strip()
     return result.split('\n')
 
+def _emptyResumeDirectory():
+    os.system('rm -rf /project/resume/*')
+
 def listDirectories():
     print '\n'.join(_getDirectories())
 
@@ -16,7 +19,14 @@ def checkoutDirectory(arguments):
 
     directoryName = arguments[0]
 
-    print 'Checking out directory {}'.format(directoryName)
+    if not directoryName in _getDirectories():
+        print 'Directory {} does not exist on the server'.format(directoryName)
+
+    _emptyResumeDirectory()
+
+    copyCommand = 'aws s3 cp --recursive s3://resumetranspiler/{} /project/resume'.format(directoryName)
+
+    os.system(copyCommand)
 
 def pushDirectory():
     print "Pushing directory"
