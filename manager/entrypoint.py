@@ -1,5 +1,6 @@
 import sys
 import os
+import datetime
 
 def _getDirectories():
     stream = os.popen('aws s3 ls s3://resumetranspiler | grep -Eo "\d{2}-\d{2}-\d{4}"')
@@ -28,8 +29,29 @@ def checkoutDirectory(arguments):
 
     os.system(copyCommand)
 
+def deleteDirectory(arguments):
+    if len(arguments) < 1:
+        print 'No directory to delete'
+        return
+
+    directoryName = arguments[0]
+
+    if not directoryName in _getDirectories():
+        print 'Directory {} does not exist on the server'.format(directoryName)
+
+    deleteCommand = 'aws s3 rm --recursive s3://resumetranspiler/{}'.format(directoryName)
+
+    os.system(deleteCommand)
+
 def pushDirectory():
-    print "Pushing directory"
+    date = datetime.date.today().strftime('%m-%d-%Y')
+
+    if date in _getDirectories():
+        deleteDirectory([date])
+
+    uploadCommand = 'aws s3 cp --recursive /project/resume s3://resumetranspiler/{}'.format(date)
+
+    os.system(uploadCommand)
 
 scriptArguments = sys.argv[1:]
 command = scriptArguments.pop(0)
