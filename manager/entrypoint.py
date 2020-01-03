@@ -2,13 +2,19 @@ import sys
 import os
 import datetime
 
+LIST_COMMAND = 'aws s3 ls s3://resumetranspiler | grep -Eo "\d{2}-\d{2}-\d{4}"'
+DOWNLOAD_COMMAND = 'aws s3 cp --recursive s3://resumetranspiler/{} /project/resume'
+UPLOAD_COMMAND = 'aws s3 cp --recursive /project/resume s3://resumetranspiler/{}'
+DELETE_FROM_SERVER_COMMAND = 'aws s3 rm --recursive s3://resumetranspiler/{}'
+EMPTY_RESUME_DIRECTORY_COMMAND = 'rm -rf /project/resume/*'
+
 def _getDirectories():
-    stream = os.popen('aws s3 ls s3://resumetranspiler | grep -Eo "\d{2}-\d{2}-\d{4}"')
+    stream = os.popen(LIST_COMMAND)
     result = stream.read().strip()
     return result.split('\n')
 
 def _emptyResumeDirectory():
-    os.system('rm -rf /project/resume/*')
+    os.system(EMPTY_RESUME_DIRECTORY_COMMAND)
 
 def listDirectories():
     print '\n'.join(_getDirectories())
@@ -25,7 +31,7 @@ def checkoutDirectory(arguments):
 
     _emptyResumeDirectory()
 
-    copyCommand = 'aws s3 cp --recursive s3://resumetranspiler/{} /project/resume'.format(directoryName)
+    copyCommand = DOWNLOAD_COMMAND.format(directoryName)
 
     os.system(copyCommand)
 
@@ -39,7 +45,7 @@ def deleteDirectory(arguments):
     if not directoryName in _getDirectories():
         print 'Directory {} does not exist on the server'.format(directoryName)
 
-    deleteCommand = 'aws s3 rm --recursive s3://resumetranspiler/{}'.format(directoryName)
+    deleteCommand = DELETE_FROM_SERVER_COMMAND.format(directoryName)
 
     os.system(deleteCommand)
 
@@ -49,7 +55,7 @@ def pushDirectory():
     if date in _getDirectories():
         deleteDirectory([date])
 
-    uploadCommand = 'aws s3 cp --recursive /project/resume s3://resumetranspiler/{}'.format(date)
+    uploadCommand = UPLOAD_COMMAND.format(date)
 
     os.system(uploadCommand)
 
