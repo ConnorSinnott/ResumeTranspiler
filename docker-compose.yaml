@@ -13,5 +13,13 @@ services:
       source_directory: '/home/node/resume/'
       log_level: 4
     ports:
-    - 3000:3000
-    - 3001:3001
+      - 3000:3000
+      - 3001:3001
+  manager:
+    build: manager/.
+    volumes:
+      - ./resume/:/project/resume/
+      - ./manager/entrypoint.py:/project/entrypoint.py
+    entrypoint: ['python', '/project/entrypoint.py']
+    env_file:
+      - ./.env
