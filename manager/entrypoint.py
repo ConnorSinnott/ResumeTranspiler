@@ -2,10 +2,10 @@ import sys
 import os
 import datetime
 
-LIST_COMMAND = 'aws s3 ls s3://resumetranspiler | grep -Eo "\d{2}-\d{2}-\d{4}"'
-DOWNLOAD_COMMAND = 'aws s3 cp --recursive s3://resumetranspiler/{} /project/resume'
-UPLOAD_COMMAND = 'aws s3 cp --recursive /project/resume s3://resumetranspiler/{}'
-DELETE_FROM_SERVER_COMMAND = 'aws s3 rm --recursive s3://resumetranspiler/{}'
+LIST_COMMAND = os.path.expandvars('aws s3 ls s3://$AWS_S3_BUCKET_NAME | grep -Eo "\d{2}-\d{2}-\d{4}"')
+DOWNLOAD_COMMAND = os.path.expandvars('aws s3 cp --recursive s3://$AWS_S3_BUCKET_NAME/{} /project/resume')
+UPLOAD_COMMAND = os.path.expandvars('aws s3 cp --recursive /project/resume s3://$AWS_S3_BUCKET_NAME/{}')
+DELETE_FROM_SERVER_COMMAND = os.path.expandvars('aws s3 rm --recursive s3://$AWS_S3_BUCKET_NAME/{}')
 EMPTY_RESUME_DIRECTORY_COMMAND = 'rm -rf /project/resume/*'
 
 def _getDirectories():
