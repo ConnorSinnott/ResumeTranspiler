@@ -6,6 +6,7 @@ LIST_COMMAND = os.path.expandvars('aws s3 ls s3://$AWS_S3_BUCKET_NAME | grep -Eo
 DOWNLOAD_COMMAND = os.path.expandvars('aws s3 cp --recursive s3://$AWS_S3_BUCKET_NAME/{} /project/resume')
 UPLOAD_COMMAND = os.path.expandvars('aws s3 cp --recursive /project/resume s3://$AWS_S3_BUCKET_NAME/{}')
 DELETE_FROM_SERVER_COMMAND = os.path.expandvars('aws s3 rm --recursive s3://$AWS_S3_BUCKET_NAME/{}')
+UPDATE_RESUME_OWNERSHIP = os.path.expandvars('chown -R $HOST_USER_ID:$HOST_USER_ID /project/resume')
 EMPTY_RESUME_DIRECTORY_COMMAND = 'rm -rf /project/resume/*'
 
 def _getDirectories():
@@ -43,6 +44,8 @@ def checkoutDirectory(arguments):
     copyCommand = DOWNLOAD_COMMAND.format(directoryName)
 
     os.system(copyCommand)
+
+    os.system(UPDATE_RESUME_OWNERSHIP)
 
 def deleteDirectory(arguments):
     if len(arguments) < 1:

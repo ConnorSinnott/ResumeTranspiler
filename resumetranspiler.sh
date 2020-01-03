@@ -6,7 +6,7 @@ case $1 in
   status) docker-compose ps;;
   list) docker-compose run --rm manager list;;
   push) docker-compose run --rm manager push;;
-  checkout) docker-compose run --rm manager checkout $2;;
+  checkout) docker-compose run --rm -e HOST_USER_ID=$(id -u $USER) manager checkout $2;;
   delete) docker-compose run --rm manager delete $2;;
   *)
     echo "Invalid command $1"
