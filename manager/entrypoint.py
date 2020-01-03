@@ -58,6 +58,7 @@ command = scriptArguments.pop(0)
 {
     "list": lambda: listDirectories(),
     "checkout": lambda: checkoutDirectory(scriptArguments),
-    "push": lambda: pushDirectory()
+    "push": lambda: pushDirectory(),
+    "delete": lambda: deleteDirectory(scriptArguments)
 }[command]()
 
