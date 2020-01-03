@@ -21,3 +21,5 @@ services:
       - ./resume/:/project/resume/
       - ./manager/entrypoint.py:/project/entrypoint.py
     entrypoint: ['python', '/project/entrypoint.py']
+    env_file:
+      - ./.env
