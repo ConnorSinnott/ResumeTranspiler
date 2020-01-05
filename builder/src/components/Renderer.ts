@@ -20,7 +20,7 @@ export const render = (
     });
 
     htmlContent = htmlContent.replace(
-        /<link rel="stylesheet" href="(?<file>.*\.scss)"\/>/,
+        /<link rel="stylesheet" href="(?<file>.*?\.scss)"\/>/g,
         (match, file) => {
             const targetFile = path.join(sourceDirectory, file);
 
