@@ -1,4 +1,21 @@
+$backgroundColor: #3c3f41;
+$paperConfig: (
+    backgroundColor: #fff,
+    width: 8.5in,
+    height: 11in,
+);
+
 body {
     margin: 0;
-    padding: 0;
+    padding: 5%;
+    background-color: $backgroundColor;
+}
+
+#paper-container {
+    margin: 0 auto;
+
+    background-color: map_get($paperConfig, backgroundColor);
+
+    width: map_get($paperConfig, width);
+    min-height: map_get($paperConfig, height);
 }
