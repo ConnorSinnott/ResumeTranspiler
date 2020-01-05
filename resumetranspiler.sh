@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 command=$1
 case $1 in
-  start-dev) docker-compose up -d builder;;
+  start-dev) docker-compose up builder;;
   stop-dev) docker-compose down -v;;
   status) docker-compose ps;;
   list) docker-compose run --rm manager list;;
