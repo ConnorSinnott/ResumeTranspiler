@@ -1,7 +1,13 @@
 #!/usr/bin/env sh
 command=$1
 case $1 in
-  start-dev) docker-compose up -d builder;;
+  start-dev)
+    if [[ ! -e './builder/src/node_modules' ]]; then
+      docker-compose run --rm builder npm i --no-save
+    fi
+
+    docker-compose up -d builder
+    ;;
   stop-dev) docker-compose down -v;;
   status) docker-compose ps;;
   list) docker-compose run --rm manager list;;
