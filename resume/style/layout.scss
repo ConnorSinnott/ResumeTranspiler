@@ -3,19 +3,31 @@ $paperConfig: (
     backgroundColor: #fff,
     width: 8.5in,
     height: 11in,
+    printSize: letter,
 );
 
 body {
     margin: 0;
-    padding: 5%;
-    background-color: $backgroundColor;
+    padding: 0;
 }
 
-#paper-container {
-    margin: 0 auto;
+@page {
+    size: map_get($paperConfig, printSize);
+    margin: 0;
+}
 
-    background-color: map_get($paperConfig, backgroundColor);
+@media not print {
+    body {
+        padding: 5%;
+        background-color: $backgroundColor;
+    }
 
-    width: map_get($paperConfig, width);
-    min-height: map_get($paperConfig, height);
+    #paper-container {
+        margin: 0 auto;
+
+        background-color: map_get($paperConfig, backgroundColor);
+
+        width: map_get($paperConfig, width);
+        min-height: map_get($paperConfig, height);
+    }
 }
