@@ -12,6 +12,7 @@ if (!SERVER_PORT)
 startDevelopmentServer({
     developmentServerPort: parseInt(SERVER_PORT),
     sourceDirectory: SOURCE_DIRECTORY,
+    reloadServerPort: 3001,
 }).then(() => {
     Logger.info(`Server listening on port ${SERVER_PORT}`);
 });
