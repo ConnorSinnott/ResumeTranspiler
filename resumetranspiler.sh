@@ -1,4 +1,6 @@
 #!/usr/bin/env sh
+source ./.env
+
 command=$1
 case $1 in
   start-dev) docker-compose up -d builder;;
