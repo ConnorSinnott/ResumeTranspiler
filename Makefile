@@ -30,3 +30,8 @@ samDeploy: samCreateBucketIfNotExist samPackage
 	  --template-file package.yaml \
 	  --stack-name $(SAM_STACK_NAME) \
 	  --capabilities CAPABILITY_IAM
+
+	echo DEVELOPMENT_SERVER_PORT=3000 > .env
+	echo RELOAD_SERVER_PORT=3001 >> .env
+	echo >> .env
+	echo AWS_S3_BUCKET_NAME=$(QUERY_GENERATED_BUCKET_NAME) >> .env
