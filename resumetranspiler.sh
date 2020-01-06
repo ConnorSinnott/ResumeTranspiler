@@ -2,7 +2,7 @@
 source ./.env
 
 command=$1
-case $1 in
+case $command in
   start-dev)
     if [[ ! -e './builder/src/node_modules' ]]; then
       docker-compose run --rm builder npm i --no-save
@@ -38,6 +38,6 @@ case $1 in
     ;;
 
   *)
-    echo "Invalid command $1"
+    echo "Invalid command $command"
     ;;
 esac
