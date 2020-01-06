@@ -1,0 +1,9 @@
+{
+  "name": "lambda",
+  "author": "Connor Sinnott",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.39",
+    "@types/aws-sdk": "^2.7.0"
+  }
+}

@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ResumeTranspiler
+
+  SAM Template for ResumeTranspiler
+
+  Handles the creation and configuration of ResumeTranspiler's S3 bucket,
+  as well as the conversion to image on upload
+
+Resources:
+  HandleResumeUploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: lambda/
+      Handler: build/handleResumeUpload.handler
+      Runtime: nodejs12.x
