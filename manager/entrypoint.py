@@ -38,6 +38,7 @@ def checkoutDirectory(arguments):
 
     if not directoryName in _getDirectories():
         print 'Directory {} does not exist on the server'.format(directoryName)
+        return
 
     _emptyResumeDirectory()
 
@@ -56,6 +57,7 @@ def deleteDirectory(arguments):
 
     if not directoryName in _getDirectories():
         print 'Directory {} does not exist on the server'.format(directoryName)
+        return
 
     deleteCommand = DELETE_FROM_SERVER_COMMAND.format(directoryName)
 
