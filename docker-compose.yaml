@@ -8,18 +8,19 @@ services:
       - ./builder/src/:/home/node/src/
       - ./resume/:/home/node/resume/
     environment:
-      server_port: 3000
-      reload_port: 3001
       source_directory: '/home/node/resume/'
       log_level: 4
     ports:
-      - 3000:3000
-      - 3001:3001
+      - '${DEVELOPMENT_SERVER_PORT}:3000'
+      - '${RELOAD_SERVER_PORT}:3001'
   manager:
     build: manager/.
     volumes:
       - ./resume/:/project/resume/
       - ./manager/entrypoint.py:/project/entrypoint.py
     entrypoint: ['python', '/project/entrypoint.py']
-    env_file:
-      - ./.env
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION
+      - AWS_S3_BUCKET_NAME
