@@ -6,6 +6,7 @@ import { watchDirectory } from './DirectoryWatcher';
 export interface DevelopmentServerOptions {
     sourceDirectory: string;
     developmentServerPort: number;
+    reloadServerPort: number;
 }
 
 export const startDevelopmentServer = async (
@@ -21,7 +22,9 @@ export const startDevelopmentServer = async (
         res.send(rendered);
     });
 
-    const reloader = await reload(application, { port: 3001 });
+    const reloader = await reload(application, {
+        port: options.reloadServerPort,
+    });
 
     watchDirectory(options.sourceDirectory, () => reloader.reload());
 
