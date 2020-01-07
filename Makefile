@@ -11,6 +11,16 @@ QUERY_GENERATED_BUCKET_NAME = $(shell aws cloudformation \
 								--query 'Stacks[0].Outputs[?OutputKey==`BucketName`].OutputValue' \
 								--output text)
 
+QUERY_GENERATED_ACCESS_KEY_ID = $(shell aws cloudformation \
+								  describe-stacks --stack-name $(SAM_STACK_NAME) \
+								  --query 'Stacks[0].Outputs[?OutputKey==`ManagerAccessKeyId`].OutputValue' \
+								  --output text)
+
+QUERY_GENERATED_SECRET_ACCESS_KEY = $(shell aws cloudformation \
+								      describe-stacks --stack-name $(SAM_STACK_NAME) \
+								      --query 'Stacks[0].Outputs[?OutputKey==`ManagerSecretAccessKey`].OutputValue' \
+								      --output text)
+
 samBuild:
 	docker-compose run --rm lambda
 
@@ -31,7 +41,11 @@ samDeploy: samCreateBucketIfNotExist samPackage
 	  --stack-name $(SAM_STACK_NAME) \
 	  --capabilities CAPABILITY_IAM
 
+samGenerateEnv:
 	echo DEVELOPMENT_SERVER_PORT=3000 > .env
 	echo RELOAD_SERVER_PORT=3001 >> .env
 	echo >> .env
 	echo AWS_S3_BUCKET_NAME=$(QUERY_GENERATED_BUCKET_NAME) >> .env
+	echo AWS_ACCESS_KEY_ID=$(QUERY_GENERATED_ACCESS_KEY_ID) >> .env
+	echo AWS_SECRET_ACCESS_KEY=$(QUERY_GENERATED_SECRET_ACCESS_KEY) >> .env
+

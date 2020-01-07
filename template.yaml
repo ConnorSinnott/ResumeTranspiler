@@ -19,7 +19,35 @@ Resources:
   ResumeBucket:
     Type: AWS::S3::Bucket
 
+  ManagerUser:
+    Type: AWS::IAM::User
+    Properties:
+      Policies:
+        - PolicyName: 'allowreadwritebucket'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt [ResumeBucket, Arn]
+              - Effect: Allow
+                Action: s3:*Object
+                Resource: !Sub
+                  - '${bucketArn}/*'
+                  - bucketArn: !GetAtt [ResumeBucket, Arn]
+
+  ManagerUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref ManagerUser
+
 Outputs:
   BucketName:
     Description: 'The name of the bucket where resumes should be uploaded'
     Value: !Ref ResumeBucket
+  ManagerAccessKeyId:
+    Description: 'The access key of the manager user'
+    Value: !Ref ManagerUserAccessKey
+  ManagerSecretAccessKey:
+    Description: 'The secret key of the manager user'
+    Value: !GetAtt [ManagerUserAccessKey, SecretAccessKey]
