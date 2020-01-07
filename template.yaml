@@ -41,6 +41,11 @@ Resources:
     Properties:
       UserName: !Ref ManagerUser
 
+  SecretManagerSecretAccessKey:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      SecretString: !GetAtt [ManagerUserAccessKey, SecretAccessKey]
+
 Outputs:
   BucketName:
     Description: 'The name of the bucket where resumes should be uploaded'
@@ -48,6 +53,6 @@ Outputs:
   ManagerAccessKeyId:
     Description: 'The access key of the manager user'
     Value: !Ref ManagerUserAccessKey
-  ManagerSecretAccessKey:
-    Description: 'The secret key of the manager user'
-    Value: !GetAtt [ManagerUserAccessKey, SecretAccessKey]
+  SecretManagerSecretAccessKeyArn:
+    Description: 'The arn to the secret key of the manager user stored in secrets manager'
+    Value: !Ref SecretManagerSecretAccessKey

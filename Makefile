@@ -16,10 +16,14 @@ QUERY_GENERATED_ACCESS_KEY_ID = $(shell aws cloudformation \
 								  --query 'Stacks[0].Outputs[?OutputKey==`ManagerAccessKeyId`].OutputValue' \
 								  --output text)
 
-QUERY_GENERATED_SECRET_ACCESS_KEY = $(shell aws cloudformation \
-								      describe-stacks --stack-name $(SAM_STACK_NAME) \
-								      --query 'Stacks[0].Outputs[?OutputKey==`ManagerSecretAccessKey`].OutputValue' \
-								      --output text)
+QUERY_GENERATED_SECRET_ACCESS_KEY_ARN = $(shell aws cloudformation \
+								          describe-stacks --stack-name $(SAM_STACK_NAME) \
+								          --query 'Stacks[0].Outputs[?OutputKey==`SecretManagerSecretAccessKeyArn`].OutputValue' \
+								          --output text)
+
+QUERY_GENERATED_SECRET_ACCESS_KEY = $(shell aws secretsmanager \
+								      get-secret-value --secret-id $(QUERY_GENERATED_SECRET_ACCESS_KEY_ARN) \
+								      | grep -P '(?<="SecretString": ").*(?=")' -o)
 
 samBuild:
 	docker-compose run --rm lambda
