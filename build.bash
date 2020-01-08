@@ -21,6 +21,7 @@ create_SAM_bucket_if_not_exist () {
     local instance_count=$(aws s3 ls | grep $SAM_BUCKET_NAME | wc -l)
 
     if [ $instance_count = 0 ]; then
+        echo "Creating bucket $SAM_BUCKET_NAME"
         aws s3 mb s3://$SAM_BUCKET_NAME
     fi
 }
@@ -33,7 +34,11 @@ package_SAM () {
         echo RELOAD_SERVER_PORT=3001 >> .env
     fi
 
+    echo "Compiling lambda"
+
     docker-compose run --rm lambda
+
+    echo "Packaging SAM"
 
     sam package \
         --template-file template.yaml \
@@ -44,12 +49,18 @@ package_SAM () {
 deploy_SAM () {
     package_SAM
 
+    echo "Deploying SAM"
+
     sam deploy \
 	    --template-file package.yaml \
 	    --stack-name $SAM_STACK_NAME \
 	    --capabilities CAPABILITY_IAM
 
+    echo "Allowing the server time to update"
+
     sleep 2
+
+    echo "Fetching build outputs"
 
     local generated_bucket_name=$(query_SAM_output BucketName)
     local generated_access_key_id=$(query_SAM_output ManagerAccessKeyId)
@@ -59,6 +70,8 @@ deploy_SAM () {
     local generated_secret_access_key=$(query_SecretManager_value $generated_secret_access_key_arn)
 
     if [ "$(aws s3api get-bucket-notification-configuration --bucket $generated_bucket_name)" == "" ]; then
+        echo "Adding a notification configuration to the generated bucket"
+
         aws lambda add-permission \
             --function-name $generated_function_arn \
             --action lambda:InvokeFunction \
@@ -94,6 +107,8 @@ deploy_SAM () {
 
         rm notification.json
     fi
+
+    echo "Building .env file"
 
     echo DEVELOPMENT_SERVER_PORT=3000 > .env
     echo RELOAD_SERVER_PORT=3001 >> .env
