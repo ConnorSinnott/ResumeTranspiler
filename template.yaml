@@ -61,6 +61,9 @@ Outputs:
   BucketName:
     Description: 'The name of the bucket where resumes should be uploaded'
     Value: !Ref ResumeBucket
+  BucketArn:
+    Description: 'The arn of the generated bucket'
+    Value: !GetAtt [ResumeBucket, Arn]
   ManagerAccessKeyId:
     Description: 'The access key of the manager user'
     Value: !Ref ManagerUserAccessKey

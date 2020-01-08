@@ -54,6 +54,7 @@ deploy_SAM () {
     local generated_bucket_name=$(query_SAM_output BucketName)
     local generated_access_key_id=$(query_SAM_output ManagerAccessKeyId)
     local generated_function_arn=$(query_SAM_output HandleResumeUploadFunctionArn)
+    local generated_bucket_arn=$(query_SAM_output BucketArn)
     local generated_secret_access_key_arn=$(query_SAM_output SecretManagerSecretAccessKeyArn)
     local generated_secret_access_key=$(query_SecretManager_value $generated_secret_access_key_arn)
 
