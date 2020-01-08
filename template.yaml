@@ -15,6 +15,17 @@ Resources:
       CodeUri: lambda/
       Handler: build/handleResumeUpload.handler
       Runtime: nodejs12.x
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: s3:ListBucket
+              Resource: !GetAtt [ResumeBucket, Arn]
+            - Effect: Allow
+              Action: s3:*Object
+              Resource: !Sub
+                - '${bucketArn}/*'
+                - bucketArn: !GetAtt [ResumeBucket, Arn]
 
   ResumeBucket:
     Type: AWS::S3::Bucket
