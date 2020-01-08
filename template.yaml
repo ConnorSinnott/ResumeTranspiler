@@ -67,3 +67,6 @@ Outputs:
   SecretManagerSecretAccessKeyArn:
     Description: 'The arn to the secret key of the manager user stored in secrets manager'
     Value: !Ref SecretManagerSecretAccessKey
+  HandleResumeUploadFunctionArn:
+    Description: 'The arn to the handle resume upload function'
+    Value: !GetAtt [HandleResumeUploadFunction, Arn]
