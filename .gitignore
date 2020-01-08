@@ -2,3 +2,4 @@
 .env
 resume/**
 package.yaml
+notification.json
