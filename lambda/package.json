@@ -4,6 +4,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.39",
-    "@types/aws-sdk": "^2.7.0"
+    "@types/aws-sdk": "^2.7.0",
+    "@types/extract-zip": "^1.6.2",
+    "@types/node": "^13.1.4"
+  },
+  "dependencies": {
+    "extract-zip": "^1.6.7"
   }
 }
