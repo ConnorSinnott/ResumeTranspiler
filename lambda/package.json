@@ -5,10 +5,12 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.39",
     "@types/aws-sdk": "^2.7.0",
+    "@types/axios": "^0.14.0",
     "@types/extract-zip": "^1.6.2",
     "@types/node": "^13.1.4"
   },
   "dependencies": {
+    "axios": "^0.19.1",
     "extract-zip": "^1.6.7",
     "render": "file:../render/render-0.3.0.tgz"
   }
