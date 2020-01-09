@@ -1,11 +1,13 @@
 import { Handler, S3Event } from 'aws-lambda';
-import { S3 } from 'aws-sdk';
+import { S3, SecretsManager } from 'aws-sdk';
 import extract from 'extract-zip';
 import fs from 'fs';
 import path from 'path';
 import { render } from 'render';
 
 const WORKING_DIR = '/tmp';
+
+const HCTI_CREDENTIALS_SECRET_ID = process.env['HCTI_CREDENTIALS_SECRET_ID'];
 
 // noinspection JSUnusedGlobalSymbols
 export const handler: Handler = async (event: S3Event) => {
@@ -26,6 +28,8 @@ export const handler: Handler = async (event: S3Event) => {
     const unzippedPath = await unzipToTempFromS3(bucketName, key);
 
     const htmlContent = render(unzippedPath, 'index.pug');
+
+    const credentials = await getHCTICredentials();
 
     return generateResponse(200, htmlContent);
 };
@@ -53,4 +57,27 @@ async function unzipToTempFromS3(bucketName: string, key: string) {
     });
 
     return path.join(WORKING_DIR, 'resume');
+}
+
+async function getHCTICredentials(): Promise<{
+    userID: string;
+    apiKey: string;
+}> {
+    if (!HCTI_CREDENTIALS_SECRET_ID)
+        throw Error(
+            'Missing required environment variable HCTI_CREDENTIALS_SECRET_ID',
+        );
+
+    const secretsManager = new SecretsManager();
+
+    const value = await secretsManager
+        .getSecretValue({
+            SecretId: HCTI_CREDENTIALS_SECRET_ID,
+        })
+        .promise();
+
+    if (!value.SecretString)
+        throw new Error('HCTI credentials secret string yielded nothing');
+
+    return JSON.parse(value.SecretString);
 }
