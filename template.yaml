@@ -21,7 +21,7 @@ Resources:
   HandleResumeUploadFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: lambda/
+      CodeUri: handleResumeUploadLambda/
       Handler: build/handleResumeUpload.handler
       Runtime: nodejs12.x
       Timeout: 30

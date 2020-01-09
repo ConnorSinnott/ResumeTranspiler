@@ -25,11 +25,11 @@ services:
       - AWS_DEFAULT_REGION
       - AWS_S3_BUCKET_NAME
   lambda:
-    build: lambda
+    build: handleResumeUploadLambda
     command: 'tsc'
     working_dir: '/home/node'
     volumes:
-      - ./lambda:/home/node
+      - ./handleResumeUploadLambda:/home/node
   render:
     build: render
     command: 'sh -c "tsc && npm pack"'
