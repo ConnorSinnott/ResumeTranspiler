@@ -47,9 +47,13 @@ package_SAM () {
 
     source HCTIApi.env
 
+    echo "Compiling renderer"
+
+    cd resume-renderer && make && cd -
+
     echo "Compiling lambda"
 
-    docker-compose run --rm lambda
+    cd handleResumeUploadLambda && make && cd -
 
     echo "Packaging SAM"
 

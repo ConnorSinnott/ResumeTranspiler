@@ -3,7 +3,7 @@ import { S3, SecretsManager } from 'aws-sdk';
 import extract from 'extract-zip';
 import fs from 'fs';
 import path from 'path';
-import { render } from 'render';
+import { render } from 'resume-renderer';
 import axios from 'axios';
 import { PassThrough } from 'stream';
 

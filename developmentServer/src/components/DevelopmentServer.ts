@@ -1,6 +1,6 @@
 import express from 'express';
 import reload from 'reload';
-import { render } from 'render';
+import { render } from 'resume-renderer';
 import { watchDirectory } from './DirectoryWatcher';
 
 export interface DevelopmentServerOptions {

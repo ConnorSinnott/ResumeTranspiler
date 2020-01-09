@@ -1,6 +1,6 @@
 {
-  "name": "render",
-  "version": "0.3.0",
+  "name": "resume-renderer",
+  "version": "1.0.0",
   "author": "Connor Sinnott",
   "license": "MIT",
   "main": "index.js",

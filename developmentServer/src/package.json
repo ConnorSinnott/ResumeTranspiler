@@ -7,7 +7,7 @@
     "chokidar": "^3.3.1",
     "express": "^4.17.1",
     "reload": "^3.0.3",
-    "render": "file:../../render/render-0.3.0.tgz"
+    "resume-renderer": "file:../../resume-renderer/src/resume-renderer-1.0.0.tgz"
   },
   "devDependencies": {
     "@types/chokidar": "^2.1.3",
