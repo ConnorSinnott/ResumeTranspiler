@@ -9,6 +9,7 @@
     "@types/node": "^13.1.4"
   },
   "dependencies": {
-    "extract-zip": "^1.6.7"
+    "extract-zip": "^1.6.7",
+    "render": "file:../render/render-0.3.0.tgz"
   }
 }

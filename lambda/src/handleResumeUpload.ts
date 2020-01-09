@@ -3,6 +3,7 @@ import { S3 } from 'aws-sdk';
 import extract from 'extract-zip';
 import fs from 'fs';
 import path from 'path';
+import { render } from 'render';
 
 const WORKING_DIR = '/tmp';
 
@@ -24,7 +25,9 @@ export const handler: Handler = async (event: S3Event) => {
 
     const unzippedPath = await unzipToTempFromS3(bucketName, key);
 
-    return generateResponse(200, unzippedPath);
+    const htmlContent = render(unzippedPath, 'index.pug');
+
+    return generateResponse(200, htmlContent);
 };
 
 async function unzipToTempFromS3(bucketName: string, key: string) {
