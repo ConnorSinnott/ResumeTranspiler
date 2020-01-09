@@ -59,6 +59,7 @@ async function saveToS3FromUrl(url: string, bucketName: string, key: string) {
             Bucket: bucketName,
             Key: key,
             Body: pass,
+            ACL: 'public-read',
             ContentType: 'image/png',
         })
         .promise();

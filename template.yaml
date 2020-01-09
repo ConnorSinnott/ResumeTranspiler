@@ -36,6 +36,11 @@ Resources:
               Resource: !Sub
                 - '${bucketArn}/*'
                 - bucketArn: !GetAtt [ResumeBucket, Arn]
+            - Effect: Allow
+              Action: s3:PutObjectAcl
+              Resource: !Sub
+                - '${bucketArn}/*'
+                - bucketArn: !GetAtt [ResumeBucket, Arn]
         - Version: '2012-10-17'
           Statement:
             - Effect: Allow
