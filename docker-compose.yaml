@@ -29,7 +29,7 @@ services:
     command: 'tsc'
     working_dir: '/home/node'
     volumes:
-      - ./handleResumeUploadLambda:/home/node
+      - ./handleResumeUploadLambda/src:/home/node
   render:
     build: resumeRenderer
     command: 'sh -c "tsc && npm pack"'
