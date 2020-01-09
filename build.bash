@@ -136,6 +136,8 @@ deploy_SAM () {
     echo AWS_S3_BUCKET_NAME=$generated_bucket_name >> .env
     echo AWS_ACCESS_KEY_ID=$generated_access_key_id >> .env
     echo AWS_SECRET_ACCESS_KEY=$generated_secret_access_key >> .env
+
+    rm package.yaml
 }
 
 command=$1
