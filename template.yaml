@@ -41,7 +41,8 @@ Resources:
               Action: secretsmanager:Get*
               Resource: !Ref SecretManagerHCTICredentials
       Environment:
-        HCTI_CREDENTIALS_SECRET_ID: !Ref SecretManagerHCTICredentials
+        Variables:
+          HCTI_CREDENTIALS_SECRET_ID: !Ref SecretManagerHCTICredentials
 
   ResumeBucket:
     Type: AWS::S3::Bucket
