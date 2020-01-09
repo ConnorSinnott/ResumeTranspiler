@@ -4,11 +4,11 @@ source ./.env
 command=$1
 case $command in
   start-dev)
-    if [[ ! -e './builder/src/node_modules' ]]; then
-      docker-compose run --rm builder npm i --no-save
+    if [[ ! -e './developmentServer/src/node_modules' ]]; then
+      docker-compose run --rm developmentserver npm i --no-save
     fi
 
-    docker-compose up builder
+    docker-compose up developmentserver
     ;;
 
   stop-dev)

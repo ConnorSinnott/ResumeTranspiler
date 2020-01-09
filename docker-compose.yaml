@@ -1,11 +1,11 @@
 version: '3'
 services:
-  builder:
+  developmentserver:
     command: 'ts-node-dev --transpile-only --respawn main.ts'
-    build: builder/.
+    build: developmentServer/.
     working_dir: /home/node/src
     volumes:
-      - ./builder/src/:/home/node/src/
+      - ./developmentServer/src/:/home/node/src/
       - ./resume/:/home/node/resume/
     environment:
       source_directory: '/home/node/resume/'
