@@ -30,3 +30,10 @@ services:
     working_dir: '/home/node'
     volumes:
       - ./lambda:/home/node
+  render:
+    build: render
+    command: 'sh -c "tsc && npm pack"'
+    working_dir: '/home/node'
+    volumes:
+      - ./render:/home/node
+
