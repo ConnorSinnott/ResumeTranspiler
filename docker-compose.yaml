@@ -35,5 +35,5 @@ services:
     command: 'sh -c "tsc && npm pack"'
     working_dir: '/home/node'
     volumes:
-      - ./resumeRenderer:/home/node
+      - ./resumeRenderer/src:/home/node
 
