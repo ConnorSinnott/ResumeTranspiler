@@ -14,10 +14,10 @@ services:
       - '${DEVELOPMENT_SERVER_PORT}:3000'
       - '${RELOAD_SERVER_PORT}:3001'
   manager:
-    build: manager/.
+    build: revisionManager/.
     volumes:
       - ./resume/:/project/resume/
-      - ./manager/entrypoint.py:/project/entrypoint.py
+      - ./revisionManager/entrypoint.py:/project/entrypoint.py
     entrypoint: ['python', '/project/entrypoint.py']
     environment:
       - AWS_ACCESS_KEY_ID
