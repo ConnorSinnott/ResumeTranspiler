@@ -8,6 +8,15 @@ Description: >
   Handles the creation and configuration of ResumeTranspiler's S3 bucket,
   as well as the conversion to image on upload
 
+Parameters:
+  HCTIApiUserID:
+    Type: String
+    Description: Api user id for https://htmlcsstoimage.com
+  HCTIApiKey:
+    Type: String
+    Description: Api key for https://htmlcsstoimage.com
+    NoEcho: True
+
 Resources:
   HandleResumeUploadFunction:
     Type: AWS::Serverless::Function
@@ -56,6 +65,14 @@ Resources:
     Type: AWS::SecretsManager::Secret
     Properties:
       SecretString: !GetAtt [ManagerUserAccessKey, SecretAccessKey]
+
+  SecretManagerHCTICredentials:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      SecretString: !Sub
+        - '{ "userID": "${userID}", "apiKey": "${apiKey}" }'
+        - userID: !Ref HCTIApiUserID
+          apiKey: !Ref HCTIApiKey
 
 Outputs:
   BucketName:
