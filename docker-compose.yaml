@@ -31,9 +31,9 @@ services:
     volumes:
       - ./handleResumeUploadLambda:/home/node
   render:
-    build: render
+    build: resumeRenderer
     command: 'sh -c "tsc && npm pack"'
     working_dir: '/home/node'
     volumes:
-      - ./render:/home/node
+      - ./resumeRenderer:/home/node
 
