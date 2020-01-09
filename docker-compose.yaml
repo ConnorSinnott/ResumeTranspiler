@@ -17,7 +17,7 @@ services:
     build: revisionManager/.
     volumes:
       - ./_resume/:/project/resume/
-      - ./revisionManager/entrypoint.py:/project/entrypoint.py
+      - ./revisionManager/src/entrypoint.py:/project/entrypoint.py
     entrypoint: ['python', '/project/entrypoint.py']
     environment:
       - AWS_ACCESS_KEY_ID
