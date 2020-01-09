@@ -34,6 +34,19 @@ package_SAM () {
         echo RELOAD_SERVER_PORT=3001 >> .env
     fi
 
+    if [ ! -f HCTIApi.env ]; then
+        echo Enter HCTIApiUserID
+        read userid
+
+        echo Enter HCTIApiKey
+        read key
+
+        echo HCTI_API_USER_ID=$userid > HCTIApi.env
+        echo HCTI_API_KEY=$key >> HCTIApi.env
+    fi
+
+    source HCTIApi.env
+
     echo "Compiling lambda"
 
     docker-compose run --rm lambda
@@ -54,7 +67,10 @@ deploy_SAM () {
     sam deploy \
 	    --template-file package.yaml \
 	    --stack-name $SAM_STACK_NAME \
-	    --capabilities CAPABILITY_IAM
+	    --capabilities CAPABILITY_IAM \
+	    --parameter-overrides \
+	        HCTIApiUserID=${HCTI_API_USER_ID} \
+	        HCTIApiKey=${HCTI_API_KEY}
 
     echo "Allowing the server time to update"
 
