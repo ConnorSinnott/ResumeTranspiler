@@ -4,6 +4,8 @@ import extract from 'extract-zip';
 import fs from 'fs';
 import path from 'path';
 import { render } from 'render';
+import axios from 'axios';
+import { PassThrough } from 'stream';
 
 const WORKING_DIR = '/tmp';
 
@@ -31,8 +33,44 @@ export const handler: Handler = async (event: S3Event) => {
 
     const credentials = await getHCTICredentials();
 
-    return generateResponse(200, htmlContent);
+    const image = await axios('https://hcti.io/v1/image', {
+        method: 'POST',
+        data: {
+            html: htmlContent,
+        },
+        auth: {
+            username: credentials.userID,
+            password: credentials.apiKey,
+        },
+    });
+
+    await saveToS3FromUrl(image.data.url, bucketName, 'example.png');
+
+    return generateResponse(200, 'OK');
 };
+
+async function saveToS3FromUrl(url: string, bucketName: string, key: string) {
+    const s3 = new S3();
+
+    var pass = new PassThrough();
+
+    const uploadPromise = s3
+        .upload({
+            Bucket: bucketName,
+            Key: key,
+            Body: pass,
+            ContentType: 'image/png',
+        })
+        .promise();
+
+    axios(url, {
+        responseType: 'stream',
+    }).then(response => {
+        response.data.pipe(pass);
+    });
+
+    await uploadPromise;
+}
 
 async function unzipToTempFromS3(bucketName: string, key: string) {
     const s3 = new S3();
