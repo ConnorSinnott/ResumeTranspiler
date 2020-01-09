@@ -35,6 +35,13 @@ Resources:
               Resource: !Sub
                 - '${bucketArn}/*'
                 - bucketArn: !GetAtt [ResumeBucket, Arn]
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: secretsmanager:Get*
+              Resource: !Ref SecretManagerHCTICredentials
+      Environment:
+        HCTI_CREDENTIALS_SECRET_ID: !Ref SecretManagerHCTICredentials
 
   ResumeBucket:
     Type: AWS::S3::Bucket
