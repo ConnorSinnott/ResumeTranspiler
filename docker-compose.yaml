@@ -6,7 +6,7 @@ services:
     working_dir: /home/node/src
     volumes:
       - ./developmentServer/src/:/home/node/src/
-      - ./resume/:/home/node/resume/
+      - ./_resume/:/home/node/resume/
     environment:
       source_directory: '/home/node/resume/'
       log_level: 4
@@ -16,7 +16,7 @@ services:
   manager:
     build: revisionManager/.
     volumes:
-      - ./resume/:/project/resume/
+      - ./_resume/:/project/resume/
       - ./revisionManager/entrypoint.py:/project/entrypoint.py
     entrypoint: ['python', '/project/entrypoint.py']
     environment:

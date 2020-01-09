@@ -1,6 +1,5 @@
 .idea
-.env
-resume/**
+.env*
+_resume
 package.yaml
 notification.json
-HCTIApi.env
