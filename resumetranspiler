@@ -4,6 +4,10 @@ source ./.env
 command=$1
 case $command in
   start-dev)
+    if [[ ! -e './resume-renderer/resume-renderer.tgz' ]]; then
+      bash build compileRenderer
+    fi
+
     if [[ ! -e './developmentServer/src/node_modules' ]]; then
       docker-compose run --rm developmentserver npm i --no-save
     fi
