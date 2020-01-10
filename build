@@ -26,6 +26,18 @@ create_SAM_bucket_if_not_exist () {
     fi
 }
 
+compile_renderer () {
+    cd resume-renderer && make && cd -
+
+    cd developmentServer/src \
+        && cp ../../resume-renderer/resume-renderer.tgz . \
+        && npm i --save ./resume-renderer.tgz && cd -
+
+    cd handleResumeUploadLambda/src \
+        && cp ../../resume-renderer/resume-renderer.tgz . \
+        && npm i --save ./resume-renderer.tgz && cd -
+}
+
 package_SAM () {
     create_SAM_bucket_if_not_exist
 
@@ -49,9 +61,7 @@ package_SAM () {
 
     echo "Compiling renderer"
 
-    cd resume-renderer && make && cd -
-    cd developmentServer/src && npm i --save ../../resume-renderer/resume-renderer.tgz && cd -
-    cd handleResumeUploadLambda/src && npm i --save ../../resume-renderer/resume-renderer.tgz && cd -
+    compile_renderer
 
     echo "Compiling lambda"
 
@@ -152,4 +162,5 @@ case $command in
     packageSAM) package_SAM;;
     deploySAM) deploy_SAM;;
     generateEnv) generate_env;;
+    compileRenderer) compile_renderer;;
 esac
