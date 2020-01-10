@@ -63,6 +63,26 @@ package_SAM () {
         --s3-bucket $SAM_BUCKET_NAME
 }
 
+generate_env () {
+    echo "Building .env file"
+
+    local generated_bucket_name=$(query_SAM_output BucketName)
+    local generated_access_key_id=$(query_SAM_output ManagerAccessKeyId)
+    local generated_function_arn=$(query_SAM_output HandleResumeUploadFunctionArn)
+    local generated_bucket_arn=$(query_SAM_output BucketArn)
+    local generated_secret_access_key_arn=$(query_SAM_output SecretManagerSecretAccessKeyArn)
+    local generated_secret_access_key=$(query_SecretManager_value $generated_secret_access_key_arn)
+
+    echo DEVELOPMENT_SERVER_PORT=3000 > .env
+    echo RELOAD_SERVER_PORT=3001 >> .env
+    echo >> .env
+    echo AWS_S3_BUCKET_NAME=$generated_bucket_name >> .env
+    echo AWS_ACCESS_KEY_ID=$generated_access_key_id >> .env
+    echo AWS_FUNCTION_ARN=$generated_function_arn >> .env
+    echo AWS_BUCKET_ARN=$generated_bucket_arn >> .env
+    echo AWS_SECRET_ACCESS_KEY=$generated_secret_access_key >> .env
+}
+
 deploy_SAM () {
     package_SAM
 
@@ -80,23 +100,17 @@ deploy_SAM () {
 
     sleep 2
 
-    echo "Fetching build outputs"
+    generate_env
+    source .env
 
-    local generated_bucket_name=$(query_SAM_output BucketName)
-    local generated_access_key_id=$(query_SAM_output ManagerAccessKeyId)
-    local generated_function_arn=$(query_SAM_output HandleResumeUploadFunctionArn)
-    local generated_bucket_arn=$(query_SAM_output BucketArn)
-    local generated_secret_access_key_arn=$(query_SAM_output SecretManagerSecretAccessKeyArn)
-    local generated_secret_access_key=$(query_SecretManager_value $generated_secret_access_key_arn)
-
-    if [ "$(aws s3api get-bucket-notification-configuration --bucket $generated_bucket_name)" == "" ]; then
+    if [ "$(aws s3api get-bucket-notification-configuration --bucket ${AWS_S3_BUCKET_NAME})" == "" ]; then
         echo "Adding a notification configuration to the generated bucket"
 
         aws lambda add-permission \
-            --function-name $generated_function_arn \
+            --function-name ${AWS_FUNCTION_ARN} \
             --action lambda:InvokeFunction \
             --principal s3.amazonaws.com \
-            --source-arn $generated_bucket_arn \
+            --source-arn ${AWS_BUCKET_ARN} \
             --statement-id 1
 
         echo "
@@ -104,7 +118,7 @@ deploy_SAM () {
             \"LambdaFunctionConfigurations\": [
               {
                 \"Id\": \"s3-event-configuration\",
-                \"LambdaFunctionArn\": \"$generated_function_arn\",
+                \"LambdaFunctionArn\": \"${AWS_FUNCTION_ARN}\",
                 \"Events\": [ \"s3:ObjectCreated:Put\" ],
                 \"Filter\": {
                   \"Key\": {
@@ -122,20 +136,11 @@ deploy_SAM () {
         " >> notification.json
 
         aws s3api put-bucket-notification-configuration \
-            --bucket $generated_bucket_name \
+            --bucket ${AWS_S3_BUCKET_NAME} \
             --notification-configuration file://notification.json
 
         rm notification.json
     fi
-
-    echo "Building .env file"
-
-    echo DEVELOPMENT_SERVER_PORT=3000 > .env
-    echo RELOAD_SERVER_PORT=3001 >> .env
-    echo >> .env
-    echo AWS_S3_BUCKET_NAME=$generated_bucket_name >> .env
-    echo AWS_ACCESS_KEY_ID=$generated_access_key_id >> .env
-    echo AWS_SECRET_ACCESS_KEY=$generated_secret_access_key >> .env
 
     rm package.yaml
 }
@@ -144,5 +149,5 @@ command=$1
 case $command in
     packageSAM) package_SAM;;
     deploySAM) deploy_SAM;;
-    generateEnv) generate_Env;;
+    generateEnv) generate_env;;
 esac
