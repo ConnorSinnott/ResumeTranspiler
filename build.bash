@@ -34,18 +34,18 @@ package_SAM () {
         echo RELOAD_SERVER_PORT=3001 >> .env
     fi
 
-    if [ ! -f HCTIApi.env ]; then
+    if [ ! -f .env.hctiapi ]; then
         echo Enter HCTIApiUserID
         read userid
 
         echo Enter HCTIApiKey
         read key
 
-        echo HCTI_API_USER_ID=$userid > HCTIApi.env
-        echo HCTI_API_KEY=$key >> HCTIApi.env
+        echo HCTI_API_USER_ID=$userid > .env.hctiapi
+        echo HCTI_API_KEY=$key >> .env.hctiapi
     fi
 
-    source HCTIApi.env
+    source .env.hctiapi
 
     echo "Compiling renderer"
 
