@@ -50,6 +50,8 @@ package_SAM () {
     echo "Compiling renderer"
 
     cd resume-renderer && make && cd -
+    cd developmentServer/src && npm i --save ../../resume-renderer/resume-renderer.tgz && cd -
+    cd handleResumeUploadLambda/src && npm i --save ../../resume-renderer/resume-renderer.tgz && cd -
 
     echo "Compiling lambda"
 
