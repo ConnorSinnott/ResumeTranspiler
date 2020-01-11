@@ -1,11 +1,7 @@
 all: build
 
 build:
-	docker run \
-		-w /home/node \
-		--mount type=bind,src=$$(pwd)/src,dst=/home/node/ \
-		$$(docker build -q .) \
-		sh -c "npm ci && tsc"
+	./run.bash sh -c "npm ci && tsc"
 
 	mkdir package
 	cp src/package.json package

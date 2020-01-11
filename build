@@ -29,13 +29,13 @@ create_SAM_bucket_if_not_exist () {
 compile_renderer () {
     cd resume-renderer && make && cd -
 
-    cd developmentServer/src \
-        && cp ../../resume-renderer/resume-renderer.tgz . \
-        && npm i --save ./resume-renderer.tgz && cd -
+    cd developmentServer \
+        && cp ../resume-renderer/resume-renderer.tgz src/. \
+        && ./run.bash npm i --save ./resume-renderer.tgz && cd -
 
-    cd handleResumeUploadLambda/src \
-        && cp ../../resume-renderer/resume-renderer.tgz . \
-        && npm i --save ./resume-renderer.tgz && cd -
+    cd handleResumeUploadLambda \
+        && cp ../resume-renderer/resume-renderer.tgz src/. \
+        && ./run.bash npm i --save ./resume-renderer.tgz && cd -
 }
 
 package_SAM () {
