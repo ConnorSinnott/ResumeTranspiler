@@ -3,6 +3,13 @@
 SAM_BUCKET_NAME="sam-resume-transpiler"
 SAM_STACK_NAME="resume-transpiler"
 
+if [ ! -f .env ]; then
+    echo DEVELOPMENT_SERVER_PORT=3000 > .env
+    echo RELOAD_SERVER_PORT=3001 >> .env
+fi
+
+source .env
+
 query_SAM_output () {
     aws cloudformation \
         describe-stacks --stack-name $SAM_STACK_NAME \
@@ -31,7 +38,7 @@ compile_renderer () {
 
     cd developmentServer \
         && cp ../resume-renderer/resume-renderer.tgz src/. \
-        && ./run.bash npm i --save ./resume-renderer.tgz && cd -
+        && docker-compose run --rm developmentserver npm i --save ./resume-renderer.tgz && cd -
 
     cd handleResumeUploadLambda \
         && cp ../resume-renderer/resume-renderer.tgz src/. \
@@ -40,11 +47,6 @@ compile_renderer () {
 
 package_SAM () {
     create_SAM_bucket_if_not_exist
-
-    if [ ! -f .env ]; then
-        echo DEVELOPMENT_SERVER_PORT=3000 > .env
-        echo RELOAD_SERVER_PORT=3001 >> .env
-    fi
 
     if [ ! -f .env.hctiapi ]; then
         echo Enter HCTIApiUserID
