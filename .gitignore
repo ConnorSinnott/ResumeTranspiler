@@ -1,3 +1,5 @@
 .idea
-.env
-resume/**
+.env*
+_resume
+package.yaml
+notification.json
