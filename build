@@ -3,13 +3,6 @@
 SAM_BUCKET_NAME="sam-resume-transpiler"
 SAM_STACK_NAME="resume-transpiler"
 
-if [ ! -f .env ]; then
-    echo DEVELOPMENT_SERVER_PORT=3000 > .env
-    echo RELOAD_SERVER_PORT=3001 >> .env
-fi
-
-source .env
-
 query_SAM_output () {
     aws cloudformation \
         describe-stacks --stack-name $SAM_STACK_NAME \
@@ -87,9 +80,6 @@ generate_env () {
     local generated_secret_access_key_arn=$(query_SAM_output SecretManagerSecretAccessKeyArn)
     local generated_secret_access_key=$(query_SecretManager_value $generated_secret_access_key_arn)
 
-    echo DEVELOPMENT_SERVER_PORT=3000 > .env
-    echo RELOAD_SERVER_PORT=3001 >> .env
-    echo >> .env
     echo AWS_S3_BUCKET_NAME=$generated_bucket_name >> .env
     echo AWS_ACCESS_KEY_ID=$generated_access_key_id >> .env
     echo AWS_FUNCTION_ARN=$generated_function_arn >> .env
