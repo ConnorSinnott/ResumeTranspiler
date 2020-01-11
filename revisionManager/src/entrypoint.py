@@ -2,12 +2,15 @@ import sys
 import os
 import datetime
 
-LIST_COMMAND = os.path.expandvars('aws s3 ls s3://$AWS_S3_BUCKET_NAME | grep -Eo "\d{2}-\d{2}-\d{4}"')
-DOWNLOAD_COMMAND = os.path.expandvars('aws s3 cp --recursive s3://$AWS_S3_BUCKET_NAME/{} /project/resume')
-UPLOAD_COMMAND = os.path.expandvars('aws s3 cp --recursive /project/resume s3://$AWS_S3_BUCKET_NAME/{}')
+LIST_COMMAND = os.path.expandvars('aws s3 ls s3://$AWS_S3_BUCKET_NAME | grep -Eo "\S*.zip"')
+DOWNLOAD_COMMAND = os.path.expandvars('aws s3 cp s3://$AWS_S3_BUCKET_NAME/{} /project/resume.zip')
+UPLOAD_COMMAND = os.path.expandvars('aws s3 cp resume.zip s3://$AWS_S3_BUCKET_NAME/{}.zip')
 DELETE_FROM_SERVER_COMMAND = os.path.expandvars('aws s3 rm --recursive s3://$AWS_S3_BUCKET_NAME/{}')
 UPDATE_RESUME_OWNERSHIP = os.path.expandvars('chown -R $HOST_USER_ID:$HOST_USER_ID /project/resume')
 EMPTY_RESUME_DIRECTORY_COMMAND = 'rm -rf /project/resume/*'
+ZIP_RESUME_COMMAND = 'zip -r resume.zip resume';
+UNZIP_RESUME_COMMAND = 'unzip resume.zip';
+REMOVE_ZIP_COMMAND = 'rm resume.zip';
 
 def _getDirectories():
     stream = os.popen(LIST_COMMAND)
@@ -46,6 +49,10 @@ def checkoutDirectory(arguments):
 
     os.system(copyCommand)
 
+    os.system(UNZIP_RESUME_COMMAND)
+
+    os.system(REMOVE_ZIP_COMMAND)
+
     os.system(UPDATE_RESUME_OWNERSHIP)
 
 def deleteDirectory(arguments):
@@ -69,9 +76,15 @@ def pushDirectory():
     if date in _getDirectories():
         deleteDirectory([date])
 
+    zipCommand = ZIP_RESUME_COMMAND.format(date)
+
+    os.system(zipCommand)
+
     uploadCommand = UPLOAD_COMMAND.format(date)
 
     os.system(uploadCommand)
+
+    os.system(REMOVE_ZIP_COMMAND)
 
 scriptArguments = sys.argv[1:]
 command = scriptArguments.pop(0)

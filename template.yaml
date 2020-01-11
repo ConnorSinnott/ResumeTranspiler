@@ -1,0 +1,106 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  ResumeTranspiler
+
+  SAM Template for ResumeTranspiler
+
+  Handles the creation and configuration of ResumeTranspiler's S3 bucket,
+  as well as the conversion to image on upload
+
+Parameters:
+  HCTIApiUserID:
+    Type: String
+    Description: Api user id for https://htmlcsstoimage.com
+  HCTIApiKey:
+    Type: String
+    Description: Api key for https://htmlcsstoimage.com
+    NoEcho: True
+
+Resources:
+  HandleResumeUploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: handleResumeUploadLambda/
+      Handler: src/handleResumeUpload.handler
+      Runtime: nodejs12.x
+      Timeout: 30
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: s3:ListBucket
+              Resource: !GetAtt [ResumeBucket, Arn]
+            - Effect: Allow
+              Action: s3:*Object
+              Resource: !Sub
+                - '${bucketArn}/*'
+                - bucketArn: !GetAtt [ResumeBucket, Arn]
+            - Effect: Allow
+              Action: s3:PutObjectAcl
+              Resource: !Sub
+                - '${bucketArn}/*'
+                - bucketArn: !GetAtt [ResumeBucket, Arn]
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action: secretsmanager:Get*
+              Resource: !Ref SecretManagerHCTICredentials
+      Environment:
+        Variables:
+          HCTI_CREDENTIALS_SECRET_ID: !Ref SecretManagerHCTICredentials
+
+  ResumeBucket:
+    Type: AWS::S3::Bucket
+
+  ManagerUser:
+    Type: AWS::IAM::User
+    Properties:
+      Policies:
+        - PolicyName: 'allowreadwritebucket'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt [ResumeBucket, Arn]
+              - Effect: Allow
+                Action: s3:*Object
+                Resource: !Sub
+                  - '${bucketArn}/*'
+                  - bucketArn: !GetAtt [ResumeBucket, Arn]
+
+  ManagerUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref ManagerUser
+
+  SecretManagerSecretAccessKey:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      SecretString: !GetAtt [ManagerUserAccessKey, SecretAccessKey]
+
+  SecretManagerHCTICredentials:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      SecretString: !Sub
+        - '{ "userID": "${userID}", "apiKey": "${apiKey}" }'
+        - userID: !Ref HCTIApiUserID
+          apiKey: !Ref HCTIApiKey
+
+Outputs:
+  BucketName:
+    Description: 'The name of the bucket where resumes should be uploaded'
+    Value: !Ref ResumeBucket
+  BucketArn:
+    Description: 'The arn of the generated bucket'
+    Value: !GetAtt [ResumeBucket, Arn]
+  ManagerAccessKeyId:
+    Description: 'The access key of the manager user'
+    Value: !Ref ManagerUserAccessKey
+  SecretManagerSecretAccessKeyArn:
+    Description: 'The arn to the secret key of the manager user stored in secrets manager'
+    Value: !Ref SecretManagerSecretAccessKey
+  HandleResumeUploadFunctionArn:
+    Description: 'The arn to the handle resume upload function'
+    Value: !GetAtt [HandleResumeUploadFunction, Arn]

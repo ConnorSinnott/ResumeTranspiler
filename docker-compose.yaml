@@ -1,23 +1,23 @@
 version: '3'
 services:
-  builder:
+  developmentserver:
     command: 'ts-node-dev --transpile-only --respawn main.ts'
-    build: builder/.
+    build: developmentServer/.
     working_dir: /home/node/src
     volumes:
-      - ./builder/src/:/home/node/src/
-      - ./resume/:/home/node/resume/
+      - ./developmentServer/src/:/home/node/src/
+      - ./_resume/:/home/node/resume/
     environment:
       source_directory: '/home/node/resume/'
       log_level: 4
     ports:
-      - '${DEVELOPMENT_SERVER_PORT}:3000'
-      - '${RELOAD_SERVER_PORT}:3001'
+      - '3000:3000'
+      - '3001:3001'
   manager:
-    build: manager/.
+    build: revisionManager/.
     volumes:
-      - ./resume/:/project/resume/
-      - ./manager/entrypoint.py:/project/entrypoint.py
+      - ./_resume/:/project/resume/
+      - ./revisionManager/src/entrypoint.py:/project/entrypoint.py
     entrypoint: ['python', '/project/entrypoint.py']
     environment:
       - AWS_ACCESS_KEY_ID
